@@ -13,7 +13,6 @@ class BucketSort implements Sorter {
     }
 
     *oneStep() {
-        const res = [];
         const map = new Array(this.MAX_NUMBER).fill(0);
         for (let i = 0; i < this.array.length; i++) {
             map[this.array[i]] = map[this.array[i]] + 1;
