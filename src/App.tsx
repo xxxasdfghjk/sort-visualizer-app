@@ -1,15 +1,11 @@
 import { Box, Button } from "@mui/material";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { useEffect, useRef, useState } from "react";
-import { Bar } from "react-chartjs-2";
 import BubbleSort from "./lib/sorts/BubbleSorter";
 import MergeSort from "./lib/sorts/MergeSorter";
 import InsertSort from "./lib/sorts/InsertSorter";
 import BucketSort from "./lib/sorts/BucketSort";
 import QuickSort from "./lib/sorts/QuickSorter";
 import ShellSort from "./lib/sorts/ShellSorter";
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const options = {
     responsive: true,
@@ -45,15 +41,19 @@ const BarGraph = (props: Props) => {
     useEffect(() => {
         const canvas = ref.current;
         const ctx = canvas?.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx && canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
         if (canvas) {
             canvas.width = props.data.array.length * 10;
             canvas.height = HEIGHT;
         }
 
         props.data.array.forEach((e, index) => {
-            ctx.fillStyle = props.data.selected.indexOf(index) !== -1 ? "orange" : "black";
-            ctx?.fillRect(index * 10, HEIGHT * (1 - e / MAX), 10, HEIGHT);
+            if (ctx) {
+                ctx.fillStyle = props.data.selected.indexOf(index) !== -1 ? "orange" : "black";
+                ctx.fillRect(index * 10, HEIGHT * (1 - e / MAX), 10, HEIGHT);
+            }
         });
     }, [props.data]);
 
@@ -105,7 +105,7 @@ const App = () => {
         const timer = setInterval(() => {
             const res = generator.next();
             if (res.value) {
-                setData({ array: [...sorter.getCurrent()], selected: res.value });
+                setData({ array: [...sorter.getCurrent()], selected: res.value as number[] });
             } else {
                 setIsExecuting(false);
                 setData({ array: [...sorter.getCurrent()], selected: [] });
